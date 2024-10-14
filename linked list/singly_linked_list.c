@@ -1,31 +1,30 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-typedef struct __linked_list__
+typedef struct sll
 {
-    int val;
-    struct __linked_list__ *next;
-} linked_list;
+    int data;
+    struct sll *next;
+} sll;
 
-linked_list *init(linked_list *head, int val)
+sll *insert_at_beg(sll *head, int val)
 {
-    head = calloc(1, sizeof(linked_list));
-    head->next = NULL;
-    head->val = val;
+    sll *temp = malloc(sizeof(sll));
+    temp->data = val;
+
+    temp->next = head;
+    head = temp;
+
     return head;
 }
 
-linked_list *insert(linked_list *head, int v)
+sll *insert_at_end(sll *head, int val)
 {
-    linked_list *temp = calloc(1, sizeof(linked_list));
-    temp->val = v;
+    sll *temp = malloc(sizeof(sll));
+    temp->data = val;
     temp->next = NULL;
-    if (!head)
-    {
-        head = temp;
-        return head;
-    }
-    linked_list *curr = head;
+
+    sll *curr = head;
     while (curr->next)
     {
         curr = curr->next;
@@ -34,27 +33,102 @@ linked_list *insert(linked_list *head, int v)
     return head;
 }
 
-void print(linked_list *head)
+sll *insert_at_index(sll *head, int val, int index)
 {
-    if (head)
+    sll *temp = malloc(sizeof(sll));
+    temp->data = val;
+    temp->next = NULL;
+
+    sll *curr = head;
+    int i = 0;
+    while (curr->next && i < index - 1)
     {
-        linked_list *curr = head;
-        while (curr)
-        {
-            printf("%d%s", curr->val, (curr->next ? " -> " : "\n"));
-            curr = curr->next;
-        }
+        curr = curr->next;
+        i++;
     }
+    temp->next = curr->next;
+    curr->next = temp;
+    return head;
+}
+
+sll *delete_at_beg(sll *head)
+{
+    if (!head)
+        return NULL;
+    sll *next = head->next;
+    free(head);
+    head = next;
+    return head;
+}
+
+sll *delete_at_end(sll *head)
+{
+    if (!head)
+        return NULL;
+    sll *curr = head;
+    sll *prev = NULL;
+    while (curr->next)
+    {
+        prev = curr;
+        curr = curr->next;
+    }
+    prev->next = NULL;
+    free(curr);
+    return head;
+}
+
+sll *delete_at_index(sll *head, int index)
+{
+    if (!head)
+        return NULL;
+    sll *curr = head, *prev;
+    int i = 0;
+    while (curr->next && i < index)
+    {
+        prev = curr;
+        curr = curr->next;
+        i++;
+    }
+    prev->next = curr->next;
+    free(curr);
+    return head;
+}
+
+void print(sll *head)
+{
+    sll *curr = head;
+    while (curr)
+    {
+        printf("%d%s", curr->data, (curr->next ? " -> " : " -> NULL"));
+        curr = curr->next;
+    }
+    printf("\n");
 }
 
 int main()
 {
-    linked_list *head;
-    head = init(head, 1);
-    insert(head, 2);
-    insert(head, 3);
-    insert(head, 4);
-    insert(head, 5);
-    print(head);
+    sll *list = malloc(sizeof(sll));
+    list->data = 10;
+    list->next = NULL;
+    list = insert_at_beg(list, 20);
+    list = insert_at_beg(list, 30);
+    print(list);
+
+    list = insert_at_end(list, 2);
+    list = insert_at_end(list, 3);
+    print(list);
+
+    list = insert_at_index(list, 6969, 2);
+    print(list);
+
+    list = delete_at_beg(list);
+    print(list);
+
+    list = delete_at_end(list);
+    print(list);
+
+    list = delete_at_index(list, 1);
+    print(list);
+
     return 0;
 }
