@@ -67,6 +67,15 @@ void preorder(const bst *root)
     preorder(root->right);
 }
 
+void free_tree(bst *root)
+{
+    if (!root)
+        return;
+    free_tree(root->left);
+    free_tree(root->right);
+    free(root);
+}
+
 int main(void)
 {
     bst *root = NULL;
@@ -79,5 +88,6 @@ int main(void)
     printf("INORDER:\n");
     inorder(root);
     printf("\n");
+    free_tree(root);
     return 0;
 }
