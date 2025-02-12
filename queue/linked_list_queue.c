@@ -74,6 +74,19 @@ int get_rear(queue *q)
     return q->rear->data;
 }
 
+void free_queue(queue *q)
+{
+    if (is_empty(q))
+        return;
+    node *curr;
+    while (q->front)
+    {
+        curr = q->front;
+        q->front = q->front->next;
+        free(curr);
+    }
+}
+
 int main(void)
 {
     queue q = {NULL, NULL};
@@ -98,6 +111,8 @@ int main(void)
 
     printf("Queue Front: %d\n", get_front(&q));
     printf("Queue Rear: %d\n", get_rear(&q));
+
+    free_queue(&q);
 
     return EXIT_SUCCESS;
 }
